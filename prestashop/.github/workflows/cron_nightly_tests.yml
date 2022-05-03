@@ -70,7 +70,7 @@ jobs:
         run: |
           USER_ID=$(id -u) GROUP_ID=$(id -g) \
           docker-compose -f docker-compose.yml up -d --build
-          bash -c 'while [[ "$(curl -L -s -o /dev/null -w %{http_code} http://localhost:8001/en/)" != "200" ]]; do sleep 5; done'
+          bash -c 'while [[ "$(curl -L -s -o /dev/null -w %{http_code} http://localhost:8000/en/)" != "200" ]]; do sleep 5; done'
 
       - name: Setup Node
         uses: actions/setup-node@v2
@@ -85,7 +85,7 @@ jobs:
         continue-on-error: true
         working-directory: ${{ env.TESTS_DIR }}
         env:
-          URL_FO: 'http://localhost:8001/'
+          URL_FO: 'http://localhost:8000/'
           SMTP_SERVER: '172.17.0.1'
         run: npm run ${{ env.TEST_CAMPAIGN }}
 

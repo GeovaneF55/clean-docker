@@ -1,31 +1,65 @@
-version: "3.9"
-    
+version: '3'
+
 services:
-  db:
-    image: mysql:5.7
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    
-  wordpress:
+   db:
+     container_name: ${CONTAINER_DB_NAME}
+     image: mariadb:latest
+     restart: unless-stopped
+     volumes:
+        - ${DB_PATH}:/var/lib/mysql
+     environment:
+       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+       MYSQL_DATABASE: ${MYSQL_DATABASE}
+       MYSQL_USER: ${MYSQL_USER}
+       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+   phpmyadmin:
     depends_on:
       - db
-    image: wordpress:latest
-    volumes:
-      - wordpress_data:/var/www/html
+    image: phpmyadmin/phpmyadmin
+    links: 
+      - db:db
     ports:
-      - "8000:80"
-    restart: always
+      - 8001:80
     environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-volumes:
-  db_data: {}
-  wordpress_data: {}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+   wordpress:
+     depends_on:
+       - db
+     container_name: ${CONTAINER_WP_NAME}
+     #image: wordpress:latest
+     build: ./wordpress
+     ports:
+      - 8000:80
+     restart: unless-stopped
+     volumes:
+       - ${WP_CORE}:/var/www/html
+       - ${WP_CONTENT}:/var/www/html/wp-content
+       - ./conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
+     environment:
+       WORDPRESS_DB_HOST: ${CONTAINER_DB_NAME}:3306
+       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+       WORDPRESS_DB_USER: ${MYSQL_USER}
+       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+       VIRTUAL_HOST: ${DOMAINS}
+       LETSENCRYPT_HOST: ${DOMAINS}
+       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+     logging:
+       options:
+         max-size: ${LOGGING_OPTIONS_MAX_SIZE:-200k}
+
+#   wpcli:
+#     image: tatemz/wp-cli
+#     volumes:
+#       - ${WP_CORE}:/var/www/html
+#       - ${WP_CONTENT}:/var/www/html/wp-content
+#     depends_on:
+#       - db
+#     entrypoint: wp
+
+# networks:
+#     default:
+#        external:
+#          name: ${NETWORK}

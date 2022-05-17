@@ -65,7 +65,7 @@ Every Shopify Theme has its own ID number, and you need this number every time y
 - You can also run a command in the Theme Kit that will list all the themes associated with the store, as well as their IDs:
 
 ```shell
-theme get -list -p=[your-api-password] -s=[your-store.myshopify.com]
+theme get --list -p=[your-api-password] -s=[your-store.myshopify.com]
 ```
 
 ## 4. Downloading the Theme for Local Development
@@ -88,7 +88,7 @@ cd [your-theme-name]
 Once you're in the directory, run the following command to create a config file based on the theme ID and your credentials:
 
 ```shell
-theme get -password=your-api-password -store=your-store.myshopify.com -themeid=your-theme-id
+theme get --password=[your-api-password] --store=[your-store.myshopify.com] --themeid=[your-theme-id]
 ```
 
 ## 5. Creating a New Theme
@@ -97,7 +97,7 @@ If you want a completely new theme, you can create it in the directory of your c
 This is the command you need:
 
 ```shell
-theme new -password=your-password -store=your-store.myshopify.com -name="New Blank Theme"
+theme new --password=your-password --store=your-store.myshopify.com --name="New Blank Theme"
 ```
 
 ## 6. Pushing Updates to Your Theme

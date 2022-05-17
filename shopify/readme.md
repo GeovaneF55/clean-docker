@@ -113,3 +113,8 @@ If you want a fully offline Shopify development option, it's best to look at Mot
 
 Need Help?
 Need help with custom Shopify theme development?  Contact our experts today - we are one of the highest rated Shopify experts in the world.
+
+# My Shopify Store
+
+- URL: dev-sibs-store.myshopify.com
+- Login: dev-sibs-store.myshopify.com/admin
